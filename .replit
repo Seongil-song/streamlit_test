@@ -1,10 +1,10 @@
-entrypoint = "main.py"
+entrypoint = "test.py"
 modules = ["python-3.11"]
-
+run = "python -m streamlit run test.py --server.address=0.0.0.0 --server.port=8501 --server.headless=true"
 
 [nix]
 channel = "stable-24_05"
-packages = ["cacert", "gcc"]
+packages = ["cacert", "freetype", "gcc", "glibcLocales", "lcms2", "libimagequant", "libjpeg", "libtiff", "libwebp", "libxcrypt", "openjpeg", "tcl", "tk", "zlib"]
 
 [unitTest]
 language = "python3"
@@ -13,7 +13,7 @@ language = "python3"
 requiredFiles = [".replit", "replit.nix"]
 
 [deployment]
-run = ["python3", "main.py"]
+run = ["python3", "-m", "streamlit", "run", "test.py", "--server.address=0.0.0.0", "--server.port=8501", "--server.headless=true"]
 deploymentTarget = "cloudrun"
 
 [[ports]]
