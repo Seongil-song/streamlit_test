@@ -1,37 +1,52 @@
 from pathlib import Path
+import json
 from typing import Any
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+class RelicsLoader:
+
+    def __init__(self):
+        self.database = self.load_database()
+
+    def load_database(self) -> dict[str, dict]:
+        try:
+            file_path = Path("data") / "database" / "relic_index.json"
+            with open(file_path, encoding="utf-8") as f:
+                database = json.load(f)
+            for key, value in database.items():
+                value["img_path"] = str(
+                    Path("data", "database", key, Path(value["img"]).name)
+                )
+                value["title"] = f"{value['label']['명칭']} ({key})"
+            self.ids = list(database.keys())
+            return database
+        except Exception as e:
+            logger.error(f"[load_database error] {e}")
+            raise e
+
+    def get_database(self) -> tuple[dict, list]:
+        return self.database.copy(), self.ids
+
+
+relics_loader = RelicsLoader()
+
 
 class Relics:
 
     def __init__(self):
-        self.database, self.ids = self._load_database()
+        self.database, self.ids = relics_loader.get_database()
         self.index = -1
         self.presented: set[str] = set()
 
-    def _load_database(self) -> tuple[dict, list]:
-        database = {
-            "1": {
-                "header": "2점 중 1번째 이미지",
-                "img_path": "data/relic1.png",
-                "title": "1번 전시물",
-                "is_presented": False,
-            },
-            "2": {
-                "header": "2점 중 2번째 이미지",
-                "img_path": "data/relic2.png",
-                "title": "2번 전시물 ",
-                "is_presented": False,
-            },
-        }
-        ids = list(database.keys())
-        return database, ids
-
     @property
-    def current_id(self) -> str:
+    def current_id(self):
         return self.ids[self.index]
 
     @property
-    def current(self) -> dict[str, Any]:
+    def current(self) -> str:
         current_relic = self.database[self.current_id]
         return current_relic
 
