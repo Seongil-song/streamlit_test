@@ -8,8 +8,8 @@ logger = logging.getLogger(__name__)
 
 class RelicsLoader:
 
-    def __init__(self):
-        self.database = self.load_database()
+    def __init__(self):        
+        self.database = self.load_database()        
 
     def load_database(self) -> dict[str, dict]:
         try:
@@ -42,11 +42,11 @@ class Relics:
         self.presented: set[str] = set()
 
     @property
-    def current_id(self):
+    def current_id(self) -> str:
         return self.ids[self.index]
 
     @property
-    def current(self) -> str:
+    def current(self) -> dict[str, Any]:
         current_relic = self.database[self.current_id]
         return current_relic
 
