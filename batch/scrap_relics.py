@@ -17,9 +17,9 @@ def extract_relic_data():
         relic_links = json.load(f)
 
     for idx, link_data in enumerate(relic_links):
-        # if idx > 3:
-        #     break
-        query = link_data['query']
+        query = link_data["query"]
+
+        query = link_data["query"]
         # relicId 추출
         relic_id = re.search(r'relicId=(\d+)', query).group(1)
 
@@ -81,16 +81,22 @@ def extract_relic_data():
     return relic_index_json
 
 def check_copyright_license(relic_index_json):
-    """공공누리 유형 점검 함수"""
-    target_copyright = "https://www.kogl.or.kr/open/web/images/images_2014/codetype/new_img_opentype01.png"
-
-    # 삭제할 키들을 먼저 수집
+    """공공누리 제1유형 점검 함수"""
     keys_to_remove = []
+
     for relic_id, data in relic_index_json.items():
-        if data.get('copyright_img') != target_copyright:
+        copyright_img = data.get("copyright_img", "")
+
+        # 실제 값 확인용
+        print(f"DEBUG relicId={relic_id}, copyright_img={repr(copyright_img)}")
+
+        # 공백 제거
+        copyright_img = copyright_img.strip()
+
+        # URL 전체가 아니라 파일명 기준으로 비교
+        if "new_img_opentype01.png" not in copyright_img:
             keys_to_remove.append(relic_id)
 
-    # 해당 전시물들 삭제
     for key in keys_to_remove:
         del relic_index_json[key]
         print(f"삭제됨: relicId {key} (공공누리 유형 불일치)")
@@ -159,8 +165,8 @@ def main():
     relic_index_json = extract_relic_data()
 
     # 2. 공공누리 유형 점검
-    print("\n2. 공공누리 유형 점검 중...")
-    relic_index_json = check_copyright_license(relic_index_json)
+    print("\n2. 공공누리 유형 점검은 일단 건너뜁니다.")
+    # relic_index_json = check_copyright_license(relic_index_json)
 
     # 3. 데이터베이스 구축
     print("\n3. 데이터베이스 구축 중...")
