@@ -15,6 +15,7 @@ system_prompt = """
 - 사용자는 전시물 카드 이미지 아래의 [이전]과 [다음]버튼으로 내비게이션 할 수 있습니다.
 """.strip()
 
+
 guide_instruction = """
 <system_command>
 
